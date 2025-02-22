@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar o Editar Mascota</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff5722;
+        }
+        .formulario {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px #ccc;
+            width: 60%;
+            margin: auto;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"], button {
+            background: #ff5722;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+        }
+        button {
+            background: #2196F3;
+        }
+        #btnGuardarCambios {
+            background: #4CAF50;
+            display: none; /* Oculto hasta que se busque una mascota */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Agregar o Editar Mascota</h1>
+
+<div class="formulario">
+    <form id="formMascota">
+        <input type="text" id="casa" placeholder="Casa que corresponde">
+        <input type="text" id="nombreGato" placeholder="Nombre del gato">
+        <input type="text" id="chip" placeholder="Chip">
+        <input type="text" id="peso" placeholder="Peso">
+        <input type="text" id="alimentacion" placeholder="Alimentación">
+        <input type="text" id="enfermedades" placeholder="Enfermedades">
+        <input type="text" id="hospital" placeholder="Hospital o clínica">
+        <input type="text" id="especialidades" placeholder="Especialidades médicas">
+        <input type="text" id="medicamentos" placeholder="Medicamentos">
+        <input type="text" id="observaciones" placeholder="Observaciones">
+        <input type="submit" value="Guardar Mascota">
+    </form>
+
+    <h2>Buscar y Editar Mascota</h2>
+    <input type="text" id="buscarNombre" placeholder="Ingrese nombre del gato">
+    <button onclick="buscarMascota()">Buscar</button>
+    <p id="resultado"></p>
+
+    <button id="btnGuardarCambios" onclick="guardarCambios()">Guardar Cambios</button>
+</div>
+
+<script>
+    let mascotaActual = null; // Variable para almacenar la mascota que se va a editar
+
+    document.getElementById("formMascota").addEventListener("submit", function(event) {
+        event.preventDefault(); // Evita el envío del formulario
+
+        let mascota = {
+            casa: document.getElementById("casa").value,
+            nombreGato: document.getElementById("nombreGato").value,
+            chip: document.getElementById("chip").value,
+            peso: document.getElementById("peso").value,
+            alimentacion: document.getElementById("alimentacion").value,
+            enfermedades: document.getElementById("enfermedades").value,
+            hospital: document.getElementById("hospital").value,
+            especialidades: document.getElementById("especialidades").value,
+            medicamentos: document.getElementById("medicamentos").value,
+            observaciones: document.getElementById("observaciones").value
+        };
+
+        if (mascota.nombreGato.trim() === "") {
+            alert("Ingrese el nombre del gato.");
+            return;
+        }
+
+        // Guardar en LocalStorage
+        localStorage.setItem(mascota.nombreGato, JSON.stringify(mascota));
+        alert("Mascota guardada exitosamente.");
+        document.getElementById("formMascota").reset();
+    });
+
+    function buscarMascota() {
+        let nombreBuscado = document.getElementById("buscarNombre").value;
+        let resultado = document.getElementById("resultado");
+
+        let datos = localStorage.getItem(nombreBuscado);
+
+        if (datos) {
+            let mascota = JSON.parse(datos);
+            mascotaActual = mascota; // Guardamos la mascota en la variable global
+
+            // Llenar los campos con los datos encontrados
+            document.getElementById("casa").value = mascota.casa;
+            document.getElementById("nombreGato").value = mascota.nombreGato;
+            document.getElementById("chip").value = mascota.chip;
+            document.getElementById("peso").value = mascota.peso;
+            document.getElementById("alimentacion").value = mascota.alimentacion;
+            document.getElementById("enfermedades").value = mascota.enfermedades;
+            document.getElementById("hospital").value = mascota.hospital;
+            document.getElementById("especialidades").value = mascota.especialidades;
+            document.getElementById("medicamentos").value = mascota.medicamentos;
+            document.getElementById("observaciones").value = mascota.observaciones;
+
+            resultado.innerHTML = "✅ Mascota encontrada. Ahora puedes editar sus datos.";
+            document.getElementById("btnGuardarCambios").style.display = "block"; // Mostrar botón de guardar cambios
+        } else {
+            resultado.innerText = "❌ Mascota NO encontrada.";
+        }
+    }
+
+    function guardarCambios() {
+        if (!mascotaActual) {
+            alert("No hay mascota cargada para editar.");
+            return;
+        }
+
+        let mascotaEditada = {
+            casa: document.getElementById("casa").value,
+            nombreGato: document.getElementById("nombreGato").value,
+            chip: document.getElementById("chip").value,
+            peso: document.getElementById("peso").value,
+            alimentacion: document.getElementById("alimentacion").value,
+            enfermedades: document.getElementById("enfermedades").value,
+            hospital: document.getElementById("hospital").value,
+            especialidades: document.getElementById("especialidades").value,
+            medicamentos: document.getElementById("medicamentos").value,
+            observaciones: document.getElementById("observaciones").value
+        };
+
+        localStorage.setItem(mascotaEditada.nombreGato, JSON.stringify(mascotaEditada));
+
+        alert("✅ Datos de la mascota actualizados correctamente.");
+        document.getElementById("btnGuardarCambios").style.display = "none"; // Ocultar botón de edición
+        document.getElementById("formMascota").reset();
+    }
+</script>
+
+</body>
+</html>
+
+
